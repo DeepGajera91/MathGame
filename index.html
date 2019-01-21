@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Hello</title>
+    <style>
+        html,body{
+            background: black;
+            margin: 0;
+        }
+
+        .incorrect{
+            color: red;
+        }
+        #root{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align:center;
+            font-family:sans-serif;
+            color:blue; 
+            height: 100vh;
+        }
+
+        #header{
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 50px;
+            margin-top:20px;
+        }
+
+        #header h1{
+            margin:0;
+            padding: 0;
+        }
+
+        #main{
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            color:cadetblue;
+        }   
+        
+        #section{
+            display: flex;
+            flex-direction: column;
+            list-style: none;
+            justify-content: center;
+        }
+
+        #problem{
+            font-size: 15vh;
+        }
+        input{
+            width:40vh;
+            height:5vh;
+            background: lightblue;
+            color:blue;
+            border: 3px solid blue;
+        }
+        #response{
+            width:100vh;
+            font-size: 40px;
+            padding:0 300px;
+            margin-top: 10px;
+        }
+        #Won{
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 72px;
+            font-family:Arial, Helvetica, sans-serif;
+            background: black;
+            color:green; 
+        }
+        a{
+            display: block;
+            color:blue;
+            text-align: center;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 2rem;
+            text-decoration: none;
+        }
+
+        button{
+            background-color:lightblue; 
+            color:blue;
+            text-align: center;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 2rem;
+        }
+
+        #section li {
+            border: 2px solid lightcoral;
+            margin-bottom: 5px;
+            text-align: center;
+            border-radius: 25px;
+        }
+
+    </style>
+</head>
+<body>
+    <!--Root-->
+    <div id="root" />
+
+    <!--Babel Script-->
+    <script type="text/babel">
+        /*Person Win The Game*/
+        class Winner extends React.Component{
+            render(){
+                return (
+                    <div id="Won">
+                        You Win {this.props.name}!
+                    </div>
+                )
+            }
+        }
+
+
+        class App extends React.Component{
+
+            constructor(props){
+                super(props);
+                this.state = {
+                    math: 0,
+                    num1: 1,
+                    num2: 1,
+                    response: "",
+                    incorrect: false,
+                    score : 0
+                };
+            }
+
+            render(){
+                if(this.state.math === 0 && this.state.score!==5){
+                    return this.renderHome();
+                }
+                else if(this.state.math === 1 && this.state.score!==5){
+                    return this.renderAdd();
+                }
+                else if(this.state.math === 2 && this.state.score!==5){
+                    return this.renderSub();
+                }
+                else if(this.state.math === 3 && this.state.score!==5){
+                    return this.renderMul();
+                }
+                else if(this.state.score === 5){
+                    return this.renderWin();
+                }
+            }
+
+            renderHome(){
+                return(
+                    <div>
+                        <div id="header">
+                            <h1>Math For Fun</h1>
+                        </div>
+                        <div id="main">
+                            <h2>What do you want to play?</h2>
+                            <h3>Click Down!</h3>
+                        </div>
+                        <ul id="section">
+                            <li><a onClick={this.renderAdd,this.resetmath1}>Addition</a></li>
+                            <li><a onClick={this.renderSub,this.resetmath2}>Substraction</a></li>
+                            <li><a onClick={this.renderMul,this.resetmath3}>Multiplication</a></li>
+                        </ul>
+                    </div>
+                );
+            }
+
+            resetmath1 = (event) => {
+                this.setState({
+                    math:1
+                });
+            }
+
+            resetmath2 = (event) => {
+                this.setState({
+                    math:2
+                });
+            }
+
+            resetmath3 = (event) => {
+                this.setState({
+                    math:3
+                });
+            }
+
+            renderSub(){
+                this.state.math=2;
+                return(
+                    <div>
+                        <div id="problem" className={this.state.incorrect ? "incorrect" : ""}>
+                            {this.state.num1} - {this.state.num2}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <input onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.response} />
+                        <br></br>
+                        <br></br>
+                        <div id="response">
+                            Response is : {this.state.response}     
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div id="response">
+                            Score is : {this.state.score}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div>
+                        <button onClick={this.resetGame}>Reset</button>
+                        <br></br>
+                        <br></br>
+                        <button onClick={this.renderHome,this.backtoGame}>Back To Homepage</button>
+                        </div>
+                    </div>                     
+                );
+            }
+
+            renderMul(){
+                this.state.math=3;
+                return(
+                    <div>
+                        <div id="problem" className={this.state.incorrect ? "incorrect" : ""}>
+                            {this.state.num1} x {this.state.num2}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <input onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.response} />
+                        <br></br>
+                        <br></br>
+                        <div id="response">
+                            Response is : {this.state.response}     
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div id="response">
+                            Score is : {this.state.score}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <button onClick={this.resetGame}>Reset</button>
+                        <br></br>
+                        <br></br>
+                        <button onClick={this.renderHome,this.backtoGame}>Back To Homepage</button>
+                    </div>                     
+                );
+            }
+
+            renderWin(){
+                const name1 = "The Addition Game";
+                const name2 = "The Substraction Game";
+                const name3 = "The Multiplication Game";
+                if(this.state.math === 1){
+                    return (
+                        <Winner name={name1} />
+                    );
+                }
+                if(this.state.math === 2){
+                    return (
+                        <Winner name={name2} />
+                    );
+                }
+                if(this.state.math === 3){
+                    return (
+                        <Winner name={name3} />
+                    );
+                }
+            }
+
+
+
+
+            renderAdd(){
+                this.state.math=1;
+                return (
+                    <div>
+                        <div id="problem" className={this.state.incorrect ? "incorrect" : ""}>
+                            {this.state.num1} + {this.state.num2}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <input onKeyPress={this.inputKeyPress} onChange={this.updateResponse} value={this.state.response} />
+                        <br></br>
+                        <br></br>
+                        <div id="response">
+                            Response is : {this.state.response}     
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <div id="response">
+                            Score is : {this.state.score}
+                        </div>
+                        <br></br>
+                        <br></br>
+                        <button onClick={this.resetGame}>Reset</button>
+                        <br></br>
+                        <br></br>
+                        <button onClick={this.renderHome,this.backtoGame}>Back To Homepage</button>
+                    </div>
+                );
+            }
+
+
+            updateResponse = (event) => {
+                this.setState({response: event.target.value});
+            }
+
+            inputKeyPress = (event) => {
+                if(event.key === "Enter"){
+                    const answer = parseInt(this.state.response);
+                    if(this.state.math === 1){
+                        if(answer === this.state.num1 + this.state.num2){
+                            this.setState(state => ({
+                                num1 : Math.floor(Math.random() * 50),
+                                num2 : Math.floor(Math.random() * 50),
+                                response : "",
+                                incorrect : false,
+                                score : state.score+1
+                            }));
+                        }
+                        else{ 
+                            this.setState(state => ({
+                                response: "",
+                                incorrect: true,
+                                score : state.score-1
+                            }));
+                        }
+                    }
+                    if(this.state.math === 2){
+                        if(answer === this.state.num1 - this.state.num2){
+                            this.setState(state => ({
+                                num1 : Math.floor(Math.random() * 50),
+                                num2 : Math.floor(Math.random() * 50),
+                                response : "",
+                                incorrect : false,
+                                score : state.score+1
+                            }));
+                        }
+                        else{ 
+                            this.setState(state => ({
+                                response: "",
+                                incorrect: true,
+                                score : state.score-1
+                            }));
+                        }
+                    }
+                    if(this.state.math === 3){
+                        if(answer === this.state.num1 * this.state.num2){
+                            this.setState(state => ({
+                                num1 : Math.floor(Math.random() * 15),
+                                num2 : Math.floor(Math.random() * 10),
+                                response : "",
+                                incorrect : false,
+                                score : state.score+1
+                            }));
+                        }
+                        else{ 
+                            this.setState(state => ({
+                                response: "",
+                                incorrect: true,
+                                score : state.score-1
+                            }));
+                        }
+                    }
+                }
+            }
+            resetGame = (event) => {
+                this.setState({
+                    num1: 1,
+                    num2: 1,
+                    response: "",
+                    incorrect: false,
+                    score:0
+                });
+            } 
+
+            backtoGame = (event) =>{
+                this.setState({
+                    math:0, 
+                    num1: 1,
+                    num2: 1,
+                    response: "",
+                    incorrect: false,
+                    score:0
+                });
+            }
+        }
+
+        ReactDOM.render(/*(
+        <div>
+            <App />    */
+            <App />
+        /*</div>)*/,document.querySelector("#root"));
+    </script>
+</body>
+</html>
